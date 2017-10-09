@@ -1,0 +1,15 @@
+{
+  "name": "mongo-news",
+  "version": "1.0.0",
+  "description": "A web app that lets users view and leave comments on the latest news.",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "author": "John Desrosiers",
+  "license": "UNLICENSED"
+}
