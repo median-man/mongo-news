@@ -4,7 +4,7 @@
   "description": "A web app that lets users view and leave comments on the latest news.",
   "main": "server.js",
   "directories": {
-	"test": "test"
+    "test": "test"
   },
   "scripts": {
     "test": "mocha",
@@ -13,11 +13,12 @@
   "author": "John Desrosiers",
   "license": "UNLICENSED",
   "devDependencies": {
+    "eslint": "^4.8.0",
     "eslint-config-airbnb-base": "^12.0.2",
     "eslint-plugin-import": "^2.7.0"
   },
   "repository": {
-	  "type": "git",
-	  "url": "https://github.com/median-man/mongo-news.git"
+    "type": "git",
+    "url": "https://github.com/median-man/mongo-news.git"
   }
 }
