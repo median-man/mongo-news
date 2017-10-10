@@ -28,7 +28,7 @@ function testArticle(article) {
       expect(article.tags).to.be.an('array');
     });
     it('has a valid pubDate property', function () {
-      expect(article.pubDate).to.be.a('date');
+      expect(article.pubDate).to.be.a('string');
     });
     it('has a valid author property', function () {
       expect(article.author).to.be.a('string');
@@ -76,24 +76,23 @@ describe('scraper', function () {
             'Building A Large-Scale Design System: How A Design ' +
             'System Was Created For The U.S. Government (Case Study)',
           summary:
-            'Editor\'s Note: We’ve been closely working with Maya on ' +
-            'this article, and we’re happy to see the final result now being ' +
-            'published on 18F. We highly encourage more teams to share the ' +
-            'lessons they learned when building design systems or pattern ' +
-            'libraries, and we’re always happy to support them in writing, ' +
-            ' editing and shaping that article. This post is a re-post of ' +
-            'Maya’s final article.',
+            'Today, there are nearly 30,000 U.S. federal websites with almost ' +
+            'no consistency between them. Between the hundreds of thousands of ' +
+            'government employees working in technology, there’s nothing in ' +
+            'common with how these websites are built or maintained.',
           url:
             'https://www.smashingmagazine.com/2017/10/large-scale-design-sy' +
             'stem-us-government/',
           tags: ['Design Patterns', 'Design Systems', 'Pattern Libraries'],
-          pubDate: new Date(2017, 9, 10),
+          pubDate: 'October 9th, 2017',
           author: 'Maya Benari'
         };
         it(itMsg, function () {
           expect(article).to.deep.equal(expectedValues);
-        })
+        });
       });
     })
-    .catch(console.log);
+    .catch((reason) => {
+      expect.fail(reason, 'scraper promise did not resolve');
+    });
 });
