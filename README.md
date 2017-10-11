@@ -17,9 +17,10 @@ Run `npm test` to run all tests.
 
 ## Built With
 * [MochaJS](https://mochajs.org/) & [Chai](http://chaijs.com/) for testing.
+* [Cheerio](https://cheerio.js.org/)
 
 ## To Do
-- [ ] Finish scraper.js. (Add test for another article on on the page.)
+- [ ] Add checking to scraper.js for page structure. Throw an error if page structure has changed.
 - [ ] Fulfill all requirements found in [requirements.md](dev/requirements.md)
 
 ## Contributors

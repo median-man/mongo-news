@@ -2,22 +2,29 @@
 const request = require('request');
 const cheerio = require('cheerio');
 
+// Returns an object containing an article from a post
+function parseArticle(article) {
+  const $ = cheerio(article);
+  // console.log(article);
+  return {
+    author: $.find('a[rel="author"]').text().trim(),
+    headline: $.find('h2 a span').text().trim(),
+    pubDate: $.find('.rd').text().trim(),
+    summary: $.find('p').eq(1).text().trim(),
+    tags: $.find('.tags a').map((i, el) => cheerio(el).text().trim()).toArray(),
+    url: $.find('h2 a').attr('href')
+  };
+}
+
 // Returns array of article object from html document.
 function parseHtml(html) {
   const $ = cheerio.load(html);
 
   // The content for each article is contained in an article element with
-  // the 'post' class.
-  const firstPost = $('article.post').first();
-
-  return [{
-    author: firstPost.find('a[rel="author"]').text().trim(),
-    headline: firstPost.find('h2 a span').text().trim(),
-    pubDate: firstPost.find('.rd').text().trim(),
-    summary: firstPost.find('p').eq(1).text().trim(),
-    tags: firstPost.find('.tags a').map((i, el) => $(el).text().trim()).toArray(),
-    url: firstPost.find('h2 a').attr('href')
-  }];
+  // the 'post' class. Return an array of articles
+  const articles = [];
+  $('article.post').each((i, el) => articles.push(parseArticle(el)));
+  return articles;
 }
 
 module.exports = function scrape() {

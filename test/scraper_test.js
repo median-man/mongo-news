@@ -1,8 +1,5 @@
 const mocha = require('mocha');
 const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-
-chai.use(chaiAsPromised);
 
 const { describe, it } = mocha;
 const { expect } = chai;
@@ -48,6 +45,7 @@ describe('scraper', function () {
   it(
     'passes an array with at least one element when the promise is fullfilled',
     function (done) {
+      this.timeout(2500);
       scraper()
         .then((articles) => {
           expect(articles).to.be.an('array');
@@ -66,9 +64,9 @@ describe('scraper', function () {
       // test contents of first article returned for page as it is on
       // 10/9/2017  (will not pass when page contents are updated)
       describe('first article in the array', function () {
-        const article = articles[0];
+        const article = articles[1];
         const itMsg = 'has values that match the first article on the page on ' +
-        '10/9/2017 (will fail when page is updated)';
+        '(will fail when page is updated)';
 
         // expected values from current page content
         const expectedValues = {
