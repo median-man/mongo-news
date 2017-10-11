@@ -20,10 +20,15 @@ Run `npm test` to run all tests.
 * [Mongoose](http://mongoosejs.com/)
 * [Express](http://expressjs.com/) with [Morgan](https://github.com/expressjs/morgan)
 * [MongoDB](https://www.mongodb.com/)
+* [Config](https://github.com/lorenwest/node-config)
 * Testing framework: [MochaJS](https://mochajs.org/) & [Chai](http://chaijs.com/)
 
 ## To Do
 - [ ] Add checking to scraper.js for page structure. Throw an error if page structure has changed.
+- [ ] Setup initial server.js and implement an Article model (no comments yet)
+- [ ] Test and refactor server and Article model
+- [ ] Implement Article model. Test & Refactor
+- [ ] Design a front-end
 - [ ] Fulfill all requirements found in [requirements.md](dev/requirements.md)
 
 ## Contributors
