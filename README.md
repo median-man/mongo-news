@@ -16,8 +16,11 @@ Run `npm install`to install dependencies.
 Run `npm test` to run all tests.
 
 ## Built With
-* [MochaJS](https://mochajs.org/) & [Chai](http://chaijs.com/) for testing.
 * [Cheerio](https://cheerio.js.org/)
+* [Mongoose](http://mongoosejs.com/)
+* [Express](http://expressjs.com/) with [Morgan](https://github.com/expressjs/morgan)
+* [MongoDB](https://www.mongodb.com/)
+* Testing framework: [MochaJS](https://mochajs.org/) & [Chai](http://chaijs.com/)
 
 ## To Do
 - [ ] Add checking to scraper.js for page structure. Throw an error if page structure has changed.
