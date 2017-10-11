@@ -7,8 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --reporter spec",
-    "start": "node server.js"
+    "test": "SET NODE_ENV=test && mocha --reporter spec",
+    "start": "SET NODE_ENV=dev && node server.js"
   },
   "author": "John Desrosiers",
   "license": "UNLICENSED",
