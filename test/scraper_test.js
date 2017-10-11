@@ -7,7 +7,7 @@ const { expect } = chai;
 /* eslint prefer-arrow-callback: 0 */
 /* eslint func-names: 0 */
 
-const scraper = require('../src/lib/scraper.js');
+const scraper = require('../lib/scraper.js');
 
 // runs tests on an article from the array produced by scraper
 function testArticle(article) {
