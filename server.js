@@ -49,7 +49,9 @@ app.post('/articles/unsave', articles.unsaveArticle);
 
 // comments api routes
 app.post('/comments', comments.addComment);
-app.get('/comments/:articleId', comments.getComments);
+app.route('/comments/:articleId')
+  .delete(comments.deleteComment)
+  .get(comments.getComments);
 
 // start the server
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
