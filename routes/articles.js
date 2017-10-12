@@ -33,7 +33,6 @@ function saveArticle(req, res) {
 
 // Scrapes for articles and returns array of new articles to client
 function scrapeNew(req, res) {
-  let newArticles = [];
   scraper()
     .then((scrapings) => {
       Article.create(scrapings, (err, newArticles) => {
