@@ -26,15 +26,13 @@ function saveArticle(req, res) {
 
 // Scrapes for articles and returns articles json to client
 function scrapeNew(req, res) {
+  let newArticles = [];
   scraper()
     .then((scrapings) => {
-      scrapings.forEach((scraping) => {
-        const entry = new Article(scraping);
-        entry.save((err, doc) => {
-          if (err) console.log({ message: err.message, scraping });
-        });
+      Article.create(scrapings, (err, newArticles) => {
+        if (err) console.log(err.message);
+        res.json(newArticles);
       });
-      res.send('Scrape Complete');
     })
     .catch(err => res.status(400).send(err));
 }
