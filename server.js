@@ -39,9 +39,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
  * ==================================================================== */
 app.get('/', (req, res) => res.send('TODO: serve landing page'));
 
-// Route will scrape for articles and save them to the db
+// Route will scrape for articles and save them to the db.
 app.get('/scrape', (req, res) => {
-  res.send('TODO: scrape the web and return a message on success');
+  scraper()
+    .then(articles => Article.create(articles))
+    .catch(err => console.log(err));
+  res.send('Scrape Complete');
+});
+
+app.get('/articles', (req, res) => {
+  Article.find()
+    .then(articles => res.json(articles))
+    .catch(err => res.status(500).json(err));
 });
 
 // start the server
