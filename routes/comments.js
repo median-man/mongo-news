@@ -11,7 +11,7 @@ function addComment(req, res) {
     // add the comment id to associated article
     return Article.findByIdAndUpdate(
       req.body.articleId,
-      { $push: { comments: comment._id } },
+      { $push: { comments: comment._id } }, // eslint-disable-line no-underscore-dangle
       {}, // no options
       (articleErr) => {
         if (articleErr) return res.status(400).send(articleErr);
