@@ -1,13 +1,16 @@
 /* Server.js is the entry point for the application. Start the app by running
  * 'npm start' */
 
-// Dependencies
+// Vendor Dependencies
 const bodyParser = require('body-parser');
 const config = require('config');
 const express = require('express');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+
+// App modules
 const scraper = require('./lib/scraper.js');
+const articles = require('./routes/articles');
 
 // Globals
 const PORT = 8080;
@@ -33,6 +36,7 @@ if (env === 'dev') app.use(logger('dev'));
 if (env !== 'dev' && env !== 'test') app.use(logger('tiny'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 // app.use(express.static('public')); // TODO: add public dir and files
 
 /* Routes
@@ -42,16 +46,14 @@ app.get('/', (req, res) => res.send('TODO: serve landing page'));
 // Route will scrape for articles and save them to the db.
 app.get('/scrape', (req, res) => {
   scraper()
-    .then(articles => Article.create(articles))
+    .then(scrapings => Article.create(scrapings))
     .catch(err => console.log(err));
   res.send('Scrape Complete');
 });
 
-app.get('/articles', (req, res) => {
-  Article.find()
-    .then(articles => res.json(articles))
-    .catch(err => res.status(500).json(err));
-});
+app.route('/articles')
+  .get(articles.getArticles)
+  .put(articles.saveArticle);
 
 // start the server
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
