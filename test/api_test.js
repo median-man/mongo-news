@@ -27,7 +27,7 @@ describe('API routes', () => {
         .get('/articles/scrape')
         .end((err, res) => {
           res.should.have.status(200);
-          res.text.should.be.equal('Scrape Complete');
+          res.text.should.include('Scrape Complete');
           done();
         });
     });

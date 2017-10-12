@@ -27,9 +27,16 @@ function saveArticle(req, res) {
 // Scrapes for articles and returns articles json to client
 function scrapeNew(req, res) {
   scraper()
-    .then(scrapings => Article.create(scrapings))
-    .catch(err => console.log(err));
-  res.send('Scrape Complete');
+    .then((scrapings) => {
+      scrapings.forEach((scraping) => {
+        const entry = new Article(scraping);
+        entry.save((err, doc) => {
+          if (err) console.log({ message: err.message, scraping });
+        });
+      });
+      res.send('Scrape Complete');
+    })
+    .catch(err => res.status(400).send(err));
 }
 
 // Sets the saved property to false for the article
