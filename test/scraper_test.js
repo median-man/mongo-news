@@ -64,7 +64,7 @@ describe('scraper', function () {
       // test contents of first article returned for page as it is on
       // 10/9/2017  (will not pass when page contents are updated)
       describe('first article in the array', function () {
-        const article = articles[1];
+        const article = articles[2];
         const itMsg = 'has values that match the first article on the page on ' +
         '(will fail when page is updated)';
 
