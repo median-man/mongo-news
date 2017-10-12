@@ -55,3 +55,5 @@ app.get('/articles', (req, res) => {
 
 // start the server
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+
+module.exports = app;
