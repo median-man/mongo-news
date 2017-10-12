@@ -9,7 +9,8 @@ const { Schema } = mongoose;
 
 // TODO: add validation
 const CommentSchema = new Schema({
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  text: { type: String, required: true }
 });
 
 // Set the created at parameter on save
