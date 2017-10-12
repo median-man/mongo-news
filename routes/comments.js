@@ -21,4 +21,14 @@ function addComment(req, res) {
   });
 }
 
-module.exports = { addComment };
+// Deletes comment and sends text confirmation to client
+function deleteComment(req, res) {
+  // TODO
+}
+
+// Send json array of comments for an article to client
+function getComments(req, res) {
+  // TODO
+}
+
+module.exports = { addComment, deleteComment, getComments };
