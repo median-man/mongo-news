@@ -23,13 +23,30 @@ function addComment(req, res) {
 
 // Deletes comment and sends text confirmation to client
 function deleteComment(req, res) {
-  // TODO
+  // get parameters from the request
+  const { articleId } = req.params;
+  const { commentId } = req.body;
+
+  // delete comment by id
+  Comment.remove({ _id: commentId })
+
+    // remove the comment from the article
+    .then(() => {
+      return Article
+        .findOneAndUpdate(
+          { _id: articleId },
+          { $pull: { comments: commentId } }, // eslint-disable-line no-underscore-dangle
+          { new: true }
+        );
+    })
+
+    // send the article to the client or the error if an error occurs
+    .then(article => res.json({ message: 'Comment succesfully deleted.', article }))
+    .catch(err => res.status(400).json({ message: err.message }));
 }
 
-// Send json array of comments for an article to client
+// Send json array of comments for an article to client. Expects request to provide article id.
 function getComments(req, res) {
-  // TODO
-  // get array of comment ids for the article
   Article
     .findOne({ _id: req.params.articleId })
     .populate('comments')
