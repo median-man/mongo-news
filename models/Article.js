@@ -10,9 +10,12 @@ const { Schema } = mongoose;
 // TODO: add validation
 const ArticleSchema = new Schema({
   author: { type: String, required: true },
+  // Array of ids pointing to doc in comments collection
+  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   createdAt: { type: Date, default: Date.now },
   headline: { type: String, required: true },
   pubDate: String,
+  saved: { type: Boolean, default: false },
   summary: { type: String, required: true },
   tags: Array,
 
