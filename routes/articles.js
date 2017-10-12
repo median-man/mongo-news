@@ -17,6 +17,13 @@ function getArticles(req, res) {
     .catch(err => res.status(500).json(err));
 }
 
+// Returns articles where saved = true
+function getSaved(req, res) {
+  Article.find({ saved: true })
+    .then(articles => res.json(articles))
+    .catch(err => res.status(500).send(err.message));
+}
+
 // Sets the saved property to true for the article with matching id
 function saveArticle(req, res) {
   setSaved(req.body.id, true)
@@ -24,7 +31,7 @@ function saveArticle(req, res) {
     .catch(err => res.status(404).json(err));
 }
 
-// Scrapes for articles and returns articles json to client
+// Scrapes for articles and returns array of new articles to client
 function scrapeNew(req, res) {
   let newArticles = [];
   scraper()
@@ -46,6 +53,7 @@ function unsaveArticle(req, res) {
 
 module.exports = {
   getArticles,
+  getSaved,
   saveArticle,
   scrapeNew,
   unsaveArticle

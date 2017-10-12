@@ -15,10 +15,6 @@ const comments = require('./routes/comments');
 // Globals
 const PORT = 8080;
 
-// Models
-// const Article = require('./models/Article.js');
-// const Comment = require('./models/Comment.js'); // TODO: add Comment model
-
 // use es6 native promises with mongoose
 mongoose.Promise = Promise;
 
@@ -43,11 +39,15 @@ app.use(bodyParser.json());
  * ==================================================================== */
 app.get('/', (req, res) => res.send('TODO: serve landing page'));
 
+// articles api routes
 app.get('/articles', articles.getArticles);
-app.post('/articles/save', articles.saveArticle);
+app.route('/articles/save')
+  .get(articles.getSaved)
+  .post(articles.saveArticle);
 app.get('/articles/scrape', articles.scrapeNew);
 app.post('/articles/unsave', articles.unsaveArticle);
 
+// comments api routes
 app.post('/comments', comments.addComment);
 
 // start the server
