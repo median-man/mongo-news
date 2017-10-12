@@ -23,4 +23,11 @@ function saveArticle(req, res) {
     .catch(err => res.status(404).json(err));
 }
 
-module.exports = { getArticles, saveArticle };
+// Sets the saved property to false for the article
+function unsaveArticle(req, res) {
+  setSaved(req.body.id, false)
+    .then(article => res.json(article))
+    .catch(err => res.status(404).json(err));
+}
+
+module.exports = { getArticles, saveArticle, unsaveArticle };

@@ -51,9 +51,9 @@ app.get('/scrape', (req, res) => {
   res.send('Scrape Complete');
 });
 
-app.route('/articles')
-  .get(articles.getArticles)
-  .put(articles.saveArticle);
+app.get('/articles', articles.getArticles);
+app.post('/articles/save', articles.saveArticle);
+app.post('/articles/unsave', articles.unsaveArticle);
 
 // start the server
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
