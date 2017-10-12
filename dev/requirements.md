@@ -1,6 +1,7 @@
 # Basic Requirements
 * Scrape for news stories from https://www.smashingmagazine.com/ every time a user visits the site
 * Add the article to the database.
+* Save and unsave articles
 * No duplicate articles in database.
 * Save the following for each article:
 	* Headline
