@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 // App modules
 const scraper = require('./lib/scraper.js');
 const articles = require('./routes/articles');
+const comments = require('./routes/comments');
 
 // Globals
 const PORT = 8080;
@@ -54,6 +55,8 @@ app.get('/scrape', (req, res) => {
 app.get('/articles', articles.getArticles);
 app.post('/articles/save', articles.saveArticle);
 app.post('/articles/unsave', articles.unsaveArticle);
+
+app.post('/comments', comments.addComment);
 
 // start the server
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
