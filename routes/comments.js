@@ -31,13 +31,12 @@ function getComments(req, res) {
   // TODO
   // get array of comment ids for the article
   Article
-    .findOne({ _id: req.body.articleId })
+    .findOne({ _id: req.params.articleId })
     .populate('comments')
-    
-    // return all comments for that article
-    .then(doc => res.json(doc))
-    .catch(err => res.status(404).send(err.message));
 
+    // return all comments for that article
+    .then(doc => res.json(doc.comments))
+    .catch(err => res.status(404).send(err.message));
 }
 
 module.exports = { addComment, deleteComment, getComments };
