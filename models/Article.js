@@ -12,7 +12,7 @@ const ArticleSchema = new Schema({
   author: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   headline: { type: String, required: true },
-  pubDate: Date,
+  pubDate: String,
   summary: { type: String, required: true },
   tags: Array,
 
