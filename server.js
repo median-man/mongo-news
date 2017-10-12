@@ -46,6 +46,7 @@ app.get('/', (req, res) => res.send('TODO: serve landing page'));
 
 // Route will scrape for articles and save them to the db.
 app.get('/scrape', (req, res) => {
+  // TODO drop all unsaved articles before scraping
   scraper()
     .then(scrapings => Article.create(scrapings))
     .catch(err => console.log(err));
