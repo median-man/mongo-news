@@ -1,4 +1,5 @@
 const Article = require('../models/Article.js');
+const scraper = require('../lib/scraper');
 
 // Returns a promise for the updated article after setting the saved property
 function setSaved(id, saved) {
@@ -23,6 +24,14 @@ function saveArticle(req, res) {
     .catch(err => res.status(404).json(err));
 }
 
+// Scrapes for articles and returns articles json to client
+function scrapeNew(req, res) {
+  scraper()
+    .then(scrapings => Article.create(scrapings))
+    .catch(err => console.log(err));
+  res.send('Scrape Complete');
+}
+
 // Sets the saved property to false for the article
 function unsaveArticle(req, res) {
   setSaved(req.body.id, false)
@@ -30,4 +39,9 @@ function unsaveArticle(req, res) {
     .catch(err => res.status(404).json(err));
 }
 
-module.exports = { getArticles, saveArticle, unsaveArticle };
+module.exports = {
+  getArticles,
+  saveArticle,
+  scrapeNew,
+  unsaveArticle
+};

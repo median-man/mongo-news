@@ -21,10 +21,10 @@ chai.use(chaiHttp);
 describe('API routes', () => {
 
   // test the /scrape route
-  describe('/GET scrape', () => {
+  describe('/GET /articles/scrape', () => {
     it('it sends "Scrape Complete" and status code 200', (done) => {
       chai.request(server)
-        .get('/scrape')
+        .get('/articles/scrape')
         .end((err, res) => {
           res.should.have.status(200);
           res.text.should.be.equal('Scrape Complete');
@@ -46,5 +46,4 @@ describe('API routes', () => {
         });
     });
   });
-
 });
