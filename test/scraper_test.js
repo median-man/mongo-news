@@ -11,7 +11,7 @@ const scraper = require('../lib/scraper.js');
 
 // runs tests on an article from the array produced by scraper
 function testArticle(article) {
-  describe('each article', function () {
+  describe('this article', function () {
     it('has a valid headline property', function () {
       expect(article.headline).to.be.a('string');
     });
