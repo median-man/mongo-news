@@ -1,8 +1,8 @@
 {{!-- Renders the buttons on an article-panel ('this' refers to an article) --}}
 {{#if this.saved}}
   <div class="btn-group btn-group-block">
-    <button class="btn btn-primary">Notes</button>
-    <button class="btn text-error">Delete</button>
+    <button class="btn btn-primary notes" data-id="{{this.id}}">Notes</button>
+    <button class="btn text-error" data-id="{{this.id}}">Delete</button>
   </div>
 {{else}}
   <div class="btn-group btn-group-block">
