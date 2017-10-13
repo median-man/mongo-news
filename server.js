@@ -5,12 +5,14 @@
 const bodyParser = require('body-parser');
 const config = require('config');
 const express = require('express');
+const exphbs = require('express-handlebars');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
-// App modules
+// routes modules
 const articles = require('./routes/articles');
 const comments = require('./routes/comments');
+const html = require('./routes/html');
 
 // Globals
 const PORT = 8080;
@@ -31,13 +33,20 @@ const env = config.util.getEnv('NODE_ENV');
 if (env === 'dev') app.use(logger('dev'));
 if (env !== 'dev' && env !== 'test') app.use(logger('tiny'));
 
+// use body parser
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// use handlebars for rendering html
+app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
 // app.use(express.static('public')); // TODO: add public dir and files
 
 /* Routes
  * ==================================================================== */
-app.get('/', (req, res) => res.send('TODO: serve landing page'));
+
+// html routes
+app.get('/', html.getRoot);
 
 // articles api routes
 app.get('/articles', articles.getArticles);
