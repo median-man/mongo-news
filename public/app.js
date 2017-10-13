@@ -1,6 +1,7 @@
 /* Configure eslint for browser */
 /* eslint-env browser, jquery */
 /* eslint func-names:0, prefer-arrow-callback:0, no-var:0, prefer-template:0, object-shorthand:0 */
+/* global notesModal */
 
 // Sends post request to save article
 function saveArticle(event) {
@@ -43,7 +44,9 @@ function scrapeNew() {
 // Requests notes for an article
 function getNotes(event) {
   // get the request url
-  var url = '/comments/' + $(event.target).attr('data-id');
+  var articleId = $(event.target).attr('data-id');
+  var articleHeadline = $(event.target).attr('data-headline');
+  var url = '/comments/' + articleId;
 
   // send a request for the notes
   $.get(url)
@@ -51,7 +54,7 @@ function getNotes(event) {
     .done(function (notes, status, response) {
       if (response.status === 200) {
         // TODO populate notes modal with notes
-        notesModal.populate(notes);
+        notesModal.populate(notes, { id: articleId, headline: articleHeadline });
         notesModal.show();
       } else alert('unexpected response: ' + response.status);
     })
