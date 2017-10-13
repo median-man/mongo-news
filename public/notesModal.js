@@ -1,6 +1,7 @@
 /* Configure eslint for browser */
 /* eslint-env browser, jquery */
-/* eslint func-names:0, prefer-arrow-callback:0, no-var:0, prefer-template:0, object-shorthand:0 */
+/* eslint func-names:0, prefer-arrow-callback:0, no-var:0,
+  prefer-template:0, object-shorthand:0, prefer-destructuring:0 */
 
 var notesModal = {
   $modal: null,
@@ -9,7 +10,6 @@ var notesModal = {
   // returns object for article id and headline. sets them if articles
   // parameter is passed to method.
   article: function (article = false) {
-    console.log(article);
     var id;
     var headline;
 
@@ -29,13 +29,11 @@ var notesModal = {
     return { id: id, headline: headline };
   },
 
-  // send delete request for note and delete the element
+  // send delete request for note and render notes
   // TODO: replace alert calls with modal or popup
   deleteNote: function (event) {
-    var $target = $(event.target);
-    var $note = $target.closest('div.note');
-    var id = $target.attr('data-id');
-    console.log(id);
+    var $btn = $(event.currentTarget);
+    var id = $btn.attr('data-id');
     var articleId = notesModal.article().id;
 
     // send delete request
@@ -45,7 +43,7 @@ var notesModal = {
       data: { commentId: id }
     })
       .done(function (note, status, response) {
-        if (response.status === 200) $note.remove();
+        if (response.status === 200) notesModal.populate(notesModal.article());
         else alert('unexpected response status: ' + response.status);
       })
       .fail(function (response) {
@@ -87,9 +85,9 @@ var notesModal = {
     // Add note form submit event
     // TODO: use modal or popups instead of alerts for displaying errors
     $('#addNote').submit(function (event) {
+      var $textArea = $('#txtNewNote');
       var articleId = notesModal.article().id;
-      console.log(articleId);
-      var noteText = $('#txtNewNote').val();
+      var noteText = $textArea.val();
       event.preventDefault();
 
       // post new note
@@ -100,9 +98,9 @@ var notesModal = {
       })
         .done(function (note, status, response) {
           if (response.status === 200) {
+            $textArea.val('');
             notesModal.populate(notesModal.article());
-          }
-          else alert('unexpected response status: ' + response.status);
+          } else alert('unexpected response status: ' + response.status);
         })
         .fail(function (response) {
           alert('Unable to add the note.');
@@ -110,12 +108,14 @@ var notesModal = {
         });
     });
     notesModal.isInitialized = true;
+    return notesModal.isInitialized;
   },
 
   // removes all notes and returns the notes container
   clear: function () { return $('#notesContainer').empty(); },
 
-  // returns jQuery obj for a note element
+  // Creates a new note element and append it to notes container. Returns a jQuery Object
+  // for the new note element.
   addNote: function (note) {
     var $newNote = $(notesModal.template);
     $newNote.find('.text').text(note.text);
@@ -135,10 +135,8 @@ var notesModal = {
   // Populates the modal with notes. If showOnCompletion show the notes modal when done.
   // Does not hide the modal if showOnCompletion is false.
   populate: function (article, showOnCompletion = false) {
-
-    // send request notes
-    notesModal.getNotes(article.id, function(notes) {
-      notesModal.clear(); // clear all notes    
+    notesModal.getNotes(article.id, function (notes) { // sends ajax request
+      notesModal.clear(); // clear all notes
       notesModal.article(article); // set modal article props
 
       // append a note element to container for each element in notes
