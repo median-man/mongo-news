@@ -28,10 +28,16 @@
   {{#unless articles}}
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title h5">Scrape for news!</div>
+          <div class="panel-title h5">No Articles</div>
         </div>
-        <div class="panel-body">
-          <p>It looks like there aren't any news articles yet. Press the 'Scrape New Articles' button above to get some articles.</p>
+        <div class="panel-body">          
+          <p>
+            {{#if saved}}
+              It looks like you haven't saved any articles.
+            {{else}}
+              It looks like there aren't any news articles yet. Press the 'Scrape New Articles' button above to get some articles.
+            {{/if}}
+          </p>
         </div>
       </div>
   {{/unless}}

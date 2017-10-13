@@ -13,8 +13,8 @@ function getRoot(req, res) {
 // Sends index page with saved articles to client
 function getSaved(req, res) {
   // get saved articles
-  Article.find({ saved: true})
-    .then(articles => res.render('index', { articles }))
+  Article.find({ saved: true })
+    .then(articles => res.render('index', { articles, saved: true }))
     .catch(() => res.stats(404).send('page unavailable'));
 }
 
