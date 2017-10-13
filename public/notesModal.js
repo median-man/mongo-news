@@ -29,6 +29,48 @@ var notesModal = {
     return { id: id, headline: headline };
   },
 
+  // send delete request for note and delete the element
+  // TODO: replace alert calls with modal or popup
+  deleteNote: function (event) {
+    var $target = $(event.target);
+    var $note = $target.closest('div.note');
+    var id = $target.attr('data-id');
+    console.log(id);
+    var articleId = notesModal.article().id;
+
+    // send delete request
+    $.ajax({
+      method: 'DELETE',
+      url: '/comments/' + articleId,
+      data: { commentId: id }
+    })
+      .done(function (note, status, response) {
+        if (response.status === 200) $note.remove();
+        else alert('unexpected response status: ' + response.status);
+      })
+      .fail(function (response) {
+        alert('Unable to delete note.');
+        console.log(response);
+      });
+  },
+
+  // returns jqXHR object
+  getNotes: function (articleId, callback) {
+    var url = '/comments/' + articleId;
+
+    // send a request for the notes
+    $.get(url)
+    // TODO implement a modal for displaying errors instead of using alerts
+      .done(function (notes, status, response) {
+        if (response.status === 200) callback(notes);
+        else alert('unexpected response: ' + response.status);
+      })
+      .fail(function (response) {
+        alert('unable to fetch notes');
+        console.log(response);
+      });
+  },
+
   // initialize properties and set event listeners
   init: function () {
     if (notesModal.isInitialized) return true; // already initialized
@@ -38,60 +80,70 @@ var notesModal = {
 
     // click events
     notesModal.$modal.on('click', function (event) {
-      var $target = $(event.target);      
+      var $target = $(event.target);
       if ($target.hasClass('close-modal')) notesModal.hide();
     });
 
-    // listen for add note form event
+    // Add note form submit event
+    // TODO: use modal or popups instead of alerts for displaying errors
     $('#addNote').submit(function (event) {
       var articleId = notesModal.article().id;
+      console.log(articleId);
       var noteText = $('#txtNewNote').val();
-      console.log(noteText);
       event.preventDefault();
 
+      // post new note
       $.ajax({
         method: 'POST',
         url: '/comments/' + articleId,
         data: { text: noteText }
       })
-        // TODO: use modal or popups instead of alerts for displaying errors
         .done(function (note, status, response) {
-          if (response.status === 200) notesModal.createNote(note);
+          if (response.status === 200) {
+            notesModal.populate(notesModal.article());
+          }
           else alert('unexpected response status: ' + response.status);
         })
         .fail(function (response) {
           alert('Unable to add the note.');
           console.log(response);
         });
-
     });
+    notesModal.isInitialized = true;
   },
 
   // removes all notes and returns the notes container
   clear: function () { return $('#notesContainer').empty(); },
 
   // returns jQuery obj for a note element
-  createNote: function (note) {
+  addNote: function (note) {
     var $newNote = $(notesModal.template);
     $newNote.find('.text').text(note.text);
-    $newNote.find('.delete').attr('data-id', note.id);
-    return $newNote;
+    $newNote.find('.delete').attr('data-id', note._id);
+
+    // listen for click on delete note button
+    $newNote.find('button.delete.note').on('click', notesModal.deleteNote);
+
+    // append to containing element for notes
+    return $newNote.appendTo('#notesContainer');
   },
 
   // methods to show and hide the modal
   hide: function () { notesModal.$modal.removeClass('active'); },
   show: function () { notesModal.$modal.addClass('active'); },
 
-  // populates the modal with notes
-  populate: function (notes, article) {
-    var $container = $('#notesContainer');
+  // Populates the modal with notes. If showOnCompletion show the notes modal when done.
+  // Does not hide the modal if showOnCompletion is false.
+  populate: function (article, showOnCompletion = false) {
 
-    notesModal.clear(); // clear all notes    
-    notesModal.article(article); // set modal article props
+    // send request notes
+    notesModal.getNotes(article.id, function(notes) {
+      notesModal.clear(); // clear all notes    
+      notesModal.article(article); // set modal article props
 
-    // append a note element to container for each element in notes
-    notes.forEach(function (el) {
-      $container.append(notesModal.createNote(el));
+      // append a note element to container for each element in notes
+      notes.forEach(function (el) { notesModal.addNote(el); });
+      if (showOnCompletion) notesModal.show();
     });
   },
 

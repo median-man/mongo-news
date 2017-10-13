@@ -26,6 +26,7 @@ function deleteComment(req, res) {
   // get parameters from the request
   const { articleId } = req.params;
   const { commentId } = req.body;
+  console.log(articleId, commentId);
 
   // delete comment by id
   Comment.remove({ _id: commentId })

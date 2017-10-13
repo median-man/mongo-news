@@ -41,34 +41,18 @@ function scrapeNew() {
     });
 }
 
-// Requests notes for an article
-function getNotes(event) {
-  // get the request url
-  var articleId = $(event.target).attr('data-id');
-  var articleHeadline = $(event.target).attr('data-headline');
-  var url = '/comments/' + articleId;
-
-  // send a request for the notes
-  $.get(url)
-  // TODO implement a modal for displaying errors instead of using alerts
-    .done(function (notes, status, response) {
-      if (response.status === 200) {
-        // TODO populate notes modal with notes
-        notesModal.populate(notes, { id: articleId, headline: articleHeadline });
-        notesModal.show();
-      } else alert('unexpected response: ' + response.status);
-    })
-    .fail(function (response) {
-      alert('unable to fetch notes');
-      console.log(response);
-    });
-}
-
 // Operations to run when page loads
 function pageReady() {
+  notesModal.init();
   $('#scrapeNew').on('click', scrapeNew);
   $('.save').on('click', saveArticle);
-  $('.notes').on('click', getNotes);
-  notesModal.init();
+  $('.notes').on('click', function (event) {
+    // get article properties
+    var article = {
+      id: $(event.target).attr('data-id'),
+      headline: $(event.target).attr('data-headline')
+    };
+    notesModal.populate(article, true);
+  });
 }
 $(document).ready(pageReady);
