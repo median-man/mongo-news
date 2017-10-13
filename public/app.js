@@ -5,7 +5,7 @@
 
 // Sends post request to save article
 function saveArticle(event) {
-  var articleId = $(event.target).attr('data-id')
+  var articleId = $(event.target).attr('data-id');
   var data = { id: articleId };
 
   // send request to save the article
@@ -23,6 +23,26 @@ function saveArticle(event) {
     });
 }
 
+// Sends request to unsave an article
+function unsaveArticle(event) {
+  var articleId = $(event.target).attr('data-id');
+  var data = { id: articleId };
+
+  // send request to save the article
+  $.ajax({ method: 'POST', url: '/articles/unsave', data: data })
+
+  // reload the page and go to the article
+    .done(function (article, status, response) {
+      if (response.status === 200) {
+        // window.location.href = window.location.hostname + '#article-' + articleId;
+        window.location.reload();
+      } else console.log('unexpected response status. status:', response.status);
+    })
+    .fail(function (response) {
+      console.log('failed to unsave the article', response.status);
+    });
+}
+
 // Sends request for new scraped articles from smashing magazine
 function scrapeNew() {
   $.get('/articles/scrape')
@@ -31,8 +51,8 @@ function scrapeNew() {
       if (response.status === 200) {
         alert(data.length + ' articles were added');
 
-        // reload the page to display articles
-        window.location.reload();
+        // load root page
+        window.location.href = '/';
       } else { alert('unexpected response: ' + response.status); }
     })
     .fail(function (response) {
@@ -46,6 +66,7 @@ function pageReady() {
   notesModal.init();
   $('#scrapeNew').on('click', scrapeNew);
   $('.save').on('click', saveArticle);
+  $('.unsave').on('click', unsaveArticle);
   $('.notes').on('click', function (event) {
     // get article properties
     var article = {
