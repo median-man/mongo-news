@@ -2,7 +2,7 @@ const Article = require('../models/Article');
 const Comment = require('../models/Comment');
 
 // Adds a new comment and sends and object back to client
-// req.body.articleId = id of corresponding article
+// req.params.articleId = id of corresponding article
 function addComment(req, res) {
   const newComment = new Comment(req.body);
   newComment.save((commentErr, comment) => {
@@ -10,7 +10,7 @@ function addComment(req, res) {
 
     // add the comment id to associated article
     return Article.findByIdAndUpdate(
-      req.body.articleId,
+      req.params.articleId,
       { $push: { comments: comment._id } }, // eslint-disable-line no-underscore-dangle
       {}, // no options
       (articleErr) => {

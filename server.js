@@ -48,10 +48,10 @@ app.get('/articles/scrape', articles.scrapeNew);
 app.post('/articles/unsave', articles.unsaveArticle);
 
 // comments api routes
-app.post('/comments', comments.addComment);
 app.route('/comments/:articleId')
   .delete(comments.deleteComment)
-  .get(comments.getComments);
+  .get(comments.getComments)
+  .post(comments.addComment);
 
 // start the server
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
