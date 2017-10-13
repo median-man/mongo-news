@@ -31,14 +31,11 @@ function deleteComment(req, res) {
   Comment.remove({ _id: commentId })
 
     // remove the comment from the article
-    .then(() => {
-      return Article
-        .findOneAndUpdate(
-          { _id: articleId },
-          { $pull: { comments: commentId } }, // eslint-disable-line no-underscore-dangle
-          { new: true }
-        );
-    })
+    .then(() => Article.findOneAndUpdate(
+      { _id: articleId },
+      { $pull: { comments: commentId } }, // eslint-disable-line no-underscore-dangle
+      { new: true }
+    ))
 
     // send the article to the client or the error if an error occurs
     .then(article => res.json({ message: 'Comment succesfully deleted.', article }))
