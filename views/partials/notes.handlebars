@@ -9,9 +9,10 @@
       <div id="notesContainer" class="content mb-2">
       </div>
       <!-- Form action handled by script -->
-      <form action="add comment" class="pt-2">
+      <form id="addNote" action="add comment" class="pt-2">
+        <input type="hidden" name="articleId" id="articleId" value="">
         <div class="form-group">
-          <textarea class="form-input" id="txtNewNote" name="text" placeholder="New Note"></textarea>
+          <textarea class="form-input" id="txtNewNote" name="text" placeholder="New Note" required></textarea>
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-block btn-primary">Save Note</button>

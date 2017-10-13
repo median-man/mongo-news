@@ -6,6 +6,29 @@ var notesModal = {
   $modal: null,
   isInitialized: false,
 
+  // returns object for article id and headline. sets them if articles
+  // parameter is passed to method.
+  article: function (article = false) {
+    console.log(article);
+    var id;
+    var headline;
+
+    // set article properties if argument parameter was passed
+    if (article) {
+      id = article.id;
+      headline = article.headline;
+      $('#articleId').val(id);
+      notesModal.$modal.find('.headline').text(headline);
+
+    // else get the properties from the modal
+    } else {
+      id = $('#articleId').val();
+      headline = notesModal.$modal.find('.headline').text();
+    }
+
+    return { id: id, headline: headline };
+  },
+
   // initialize properties and set event listeners
   init: function () {
     if (notesModal.isInitialized) return true; // already initialized
@@ -13,13 +36,34 @@ var notesModal = {
     // get the modal
     notesModal.$modal = $('.modal');
 
-    // set event listener
+    // click events
     notesModal.$modal.on('click', function (event) {
-      var $target = $(event.target);
+      var $target = $(event.target);      
+      if ($target.hasClass('close-modal')) notesModal.hide();
+    });
 
-      if ($target.hasClass('close-modal')) {
-        notesModal.hide();
-      }
+    // listen for add note form event
+    $('#addNote').submit(function (event) {
+      var articleId = notesModal.article().id;
+      var noteText = $('#txtNewNote').val();
+      console.log(noteText);
+      event.preventDefault();
+
+      $.ajax({
+        method: 'POST',
+        url: '/comments/' + articleId,
+        data: { text: noteText }
+      })
+        // TODO: use modal or popups instead of alerts for displaying errors
+        .done(function (note, status, response) {
+          if (response.status === 200) notesModal.createNote(note);
+          else alert('unexpected response status: ' + response.status);
+        })
+        .fail(function (response) {
+          alert('Unable to add the note.');
+          console.log(response);
+        });
+
     });
   },
 
@@ -39,9 +83,11 @@ var notesModal = {
   show: function () { notesModal.$modal.addClass('active'); },
 
   // populates the modal with notes
-  populate: function (notes) {
+  populate: function (notes, article) {
     var $container = $('#notesContainer');
-    notesModal.clear(); // clear all notes
+
+    notesModal.clear(); // clear all notes    
+    notesModal.article(article); // set modal article props
 
     // append a note element to container for each element in notes
     notes.forEach(function (el) {
