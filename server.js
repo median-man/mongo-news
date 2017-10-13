@@ -40,13 +40,16 @@ app.use(bodyParser.json());
 // use handlebars for rendering html
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
-// app.use(express.static('public')); // TODO: add public dir and files
+
+// use static files
+app.use(express.static('public'));
 
 /* Routes
  * ==================================================================== */
 
 // html routes
 app.get('/', html.getRoot);
+app.get('/saved', html.getSaved);
 
 // articles api routes
 app.get('/articles', articles.getArticles);
