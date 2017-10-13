@@ -19,6 +19,7 @@ Run `npm test` to run all tests.
 * [Cheerio](https://cheerio.js.org/)
 * [Mongoose](http://mongoosejs.com/)
 * [Express](http://expressjs.com/) with [Morgan](https://github.com/expressjs/morgan)
+* [Handlebars](http://handlebarsjs.com/)
 * [MongoDB](https://www.mongodb.com/)
 * [Config](https://github.com/lorenwest/node-config)
 * Testing framework: [MochaJS](https://mochajs.org/) & [Chai](http://chaijs.com/)
