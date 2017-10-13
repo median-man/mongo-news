@@ -3,7 +3,25 @@
 /* eslint func-names:0, prefer-arrow-callback:0, no-var:0, prefer-template:0, object-shorthand:0 */
 
 var notesModal = {
-  $modal: function () { return $('.modal'); },
+  $modal: null,
+  isInitialized: false,
+
+  // initialize properties and set event listeners
+  init: function () {
+    if (notesModal.isInitialized) return true; // already initialized
+
+    // get the modal
+    notesModal.$modal = $('.modal');
+
+    // set event listener
+    notesModal.$modal.on('click', function (event) {
+      var $target = $(event.target);
+
+      if ($target.hasClass('close-modal')) {
+        notesModal.hide();
+      }
+    });
+  },
 
   // removes all notes and returns the notes container
   clear: function () { return $('#notesContainer').empty(); },
@@ -17,8 +35,8 @@ var notesModal = {
   },
 
   // methods to show and hide the modal
-  hide: function () { notesModal.$modal().removeClass('active'); },
-  show: function () { notesModal.$modal().addClass('active'); },
+  hide: function () { notesModal.$modal.removeClass('active'); },
+  show: function () { notesModal.$modal.addClass('active'); },
 
   // populates the modal with notes
   populate: function (notes) {
