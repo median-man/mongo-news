@@ -22,14 +22,15 @@ Run `npm test` to run all tests.
 * [Handlebars](http://handlebarsjs.com/)
 * [MongoDB](https://www.mongodb.com/)
 * [Config](https://github.com/lorenwest/node-config)
-* Testing framework: [MochaJS](https://mochajs.org/) & [Chai](http://chaijs.com/)
+* [Spectre](https://picturepan2.github.io/spectre/index.html) CSS Framework
+* Testing framework: [Mocha](https://mochajs.org/) & [Chai](http://chaijs.com/)
 
 ## To Do
 - [ ] Add checking to scraper.js for page structure. Throw an error if page structure has changed.
-- [ ] Setup initial server.js and implement an Article model (no comments yet)
-- [ ] Test and refactor server and Article model
-- [ ] Implement Article model. Test & Refactor
-- [ ] Design a front-end
+- [x] Setup initial server.js and implement an Article model (no comments yet)
+- [x] Test and refactor server and Article model
+- [x] Implement Article model. Test & Refactor
+- [x] Design a front-end
 - [ ] Fulfill all requirements found in [requirements.md](dev/requirements.md)
 
 ## Contributors
