@@ -1,0 +1,29 @@
+<div class="modal">
+  <div class="modal-overlay close-modal"></div>
+  <div class="modal-container">
+    <div class="modal-header">
+      <p class="headline text-ellipsis"><b>Monthly Web Development Update 10/2017: CSS Grid, CAA Pitfalls, And Image Optimization</b></p>
+      <div class="modal-title h5">Notes:</div>
+    </div>
+    <div class="modal-body">
+      <div id="notesContainer" class="content mb-2">
+        <div class="note">
+          <button class="btn btn-sm btn-primary btn-action circle float-right delete note" data-id="noteId"><i class="icon icon-cross"></i></button>
+          <p class="note text">This is a note.</p>
+        </div>
+      </div>
+      <!-- Form action handled by script -->
+      <form action="add comment" class="pt-2">
+        <div class="form-group">
+          <textarea class="form-input" id="txtNewNote" name="text" placeholder="New Note"></textarea>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-block btn-primary">Save Note</button>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-link close-modal">Close</button>
+    </div>
+  </div>
+</div>
