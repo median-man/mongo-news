@@ -4,8 +4,8 @@
       <div class="column col-12 my-2">
         <section class="navbar-section">
           <a href="/" class="navbar-brand mr-2">Mongo News</a>
-          <a href="#" class="btn mr-2">Saved Articles</a>
-          <a href="#" class="btn btn-primary">Scrape New Articles</a>
+          <a href="/saved" class="btn mr-2">Saved Articles</a>
+          <button class="btn btn-primary" id="scrapeNew">Scrape New Articles</button>
         </section>
       </div>
     </div>
@@ -19,23 +19,23 @@
   </div>
 </div>
 
-{{#each articles}}
-  {{> article-panel}}
-{{/each}}
+<div class="container grid-xl">
+  {{#each articles}}
+    {{> article-panel}}
+  {{/each}}
 
-{{!-- display when no articles are populated --}}
-{{#unless articles}}
-  <div class="container grid-xl">
-    <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title h5">Scrape for news!</div>
+  {{!-- display when no articles are populated --}}
+  {{#unless articles}}
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title h5">Scrape for news!</div>
+        </div>
+        <div class="panel-body">
+          <p>It looks like there aren't any news articles yet. Press the 'Scrape New Articles' button above to get some articles.</p>
+        </div>
       </div>
-      <div class="panel-body">
-        <p>It looks like there aren't any news articles yet. Press the 'Scrape New Articles' button above to get some articles.</p>
-      </div>
-    </div>
-  </div>
-{{/unless}}
+  {{/unless}}
+</div>
 
 <footer>
   <div class="container grid-xl">

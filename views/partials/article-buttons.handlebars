@@ -1,0 +1,12 @@
+{{!-- Renders the buttons on an article-panel ('this' refers to an article) --}}
+{{#if this.saved}}
+  <div class="btn-group btn-group-block">
+    <button class="btn btn-primary">Notes</button>
+    <button class="btn text-error">Delete</button>
+  </div>
+{{else}}
+  <div class="btn-group btn-group-block">
+    <button class="btn disabled">Notes</button>
+    <button class="btn btn-primary btn-block save" data-id={{this.id}}>Save</button>
+  </div>
+{{/if}}

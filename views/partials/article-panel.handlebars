@@ -1,11 +1,20 @@
 {{!-- Renders an article object ('this') --}}
-<div class="container grid-xl">
-  <div class="panel">
-    <div class="panel-header">
-      <div class="panel-title h5">{{this.headline}}</div>
+<div class="panel" id="article-{{this.id}}">
+  <div class="panel-header">
+    <div class="panel-title h5">
+      <div class="columns">
+        <div class="column col-10 col-xs-9">
+          {{this.headline}}
+        </div>
+        <div class="column col-2 col-xs-3">
+          <div class="">
+            {{> article-buttons}}
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="panel-body">
-      <p>{{this.summary}}</p>
-    </div>
+  </div>
+  <div class="panel-body">
+    <p>{{this.summary}}</p>
   </div>
 </div>
