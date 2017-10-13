@@ -1,10 +1,11 @@
 // set env to test
 process.env.NODE_ENV = 'test';
 
-/* global describe beforeEach it */
+/* global describe before beforeEach it */
 
 const mongoose = require('mongoose');
 const Article = require('../models/Article');
+const Comment = require('../models/Comment');
 
 // dependencies
 const chai = require('chai');
@@ -42,6 +43,35 @@ describe('API routes', () => {
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.at.least(1);
+          done();
+        });
+    });
+  });
+
+  // test /comments route.
+  describe('/POST comments/articleId', () => {
+    let articleId;
+    const comment = {
+      text: 'This is a test comment.'
+    };
+
+    // get a valid article id
+    before((done) => {
+      Article.findOne().then((doc) => {
+        articleId = doc._id;
+        done();
+      });
+    });
+
+    it('it should POST a comment', (done) => {
+      chai.request(server)
+        .post(`/comments/${articleId}`)
+        .send(comment)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('text');
+          res.body.should.have.property('createdAt');
           done();
         });
     });
