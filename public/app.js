@@ -11,14 +11,14 @@ function saveArticle(event) {
   $.ajax({ method: 'POST', url: '/articles/save', data: data })
 
   // reload the page and go to the article
-    .done(function (data, status, response) {
+    .done(function (article, status, response) {
       if (response.status === 200) {
         // window.location.href = window.location.hostname + '#article-' + articleId;
         window.location.reload();
       } else console.log('unexpected response status. status:', response.status);
     })
     .fail(function (response) {
-      console.log('failed to save the article', response.status)
+      console.log('failed to save the article', response.status);
     });
 }
 
@@ -32,8 +32,7 @@ function scrapeNew() {
 
         // reload the page to display articles
         window.location.reload();
-      }
-      else { alert('unexpected response: ' + response.status); }
+      } else { alert('unexpected response: ' + response.status); }
     })
     .fail(function (response) {
       alert('unable to process request at this time');
