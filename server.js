@@ -15,7 +15,7 @@ const comments = require('./routes/comments');
 const html = require('./routes/html');
 
 // Globals
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 // use es6 native promises with mongoose
 mongoose.Promise = Promise;
