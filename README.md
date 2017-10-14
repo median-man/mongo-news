@@ -5,11 +5,11 @@ A web app that lets users view and leave comments on the latest news from the [S
 https://mongo-news-smash.herokuapp.com/
 
 ## Using the App
-'Scrape New Articles' button checks for new articles, adds them to the database, and adds them to the page.
-Clicking on 'Save' will add the article to a list of saved articles.
-Clicking on 'Saved Articles' will show only articles that have been flagged as saved.
-Click on the 'Notes' button to view, add, and delete notes and comments about an article. An article must be saved for notes to be enable.
-If an article has been unsaved by clicking the 'Unsave' button, any notes are retained. However, the article must first be re-saved before notes can be viewed again.
+* 'Scrape New Articles' button checks for new articles, adds them to the database, and adds them to the page.
+* Clicking on 'Save' will add the article to a list of saved articles.
+* Clicking on 'Saved Articles' will show only articles that have been flagged as saved.
+* Click on the 'Notes' button to view, add, and delete notes and comments about an article. An article must be saved for notes to be enable.
+* If an article has been unsaved by clicking the 'Unsave' button, any notes are retained. However, the article must first be re-saved before notes can be viewed again.
 
 ## Getting Started
 
