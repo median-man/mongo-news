@@ -27,7 +27,6 @@ Run `npm test` to run all tests.
 * [Express](http://expressjs.com/) with [Morgan](https://github.com/expressjs/morgan)
 * [Handlebars](http://handlebarsjs.com/)
 * [MongoDB](https://www.mongodb.com/)
-* [Config](https://github.com/lorenwest/node-config)
 * [Spectre](https://picturepan2.github.io/spectre/index.html) CSS Framework
 * Testing framework: [Mocha](https://mochajs.org/) & [Chai](http://chaijs.com/)
 
