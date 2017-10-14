@@ -3,7 +3,6 @@
 
 // Vendor Dependencies
 const bodyParser = require('body-parser');
-const config = require('config');
 const express = require('express');
 const exphbs = require('express-handlebars');
 const logger = require('morgan');
@@ -24,15 +23,13 @@ mongoose.Promise = Promise;
 const app = express();
 
 // Initialize the database connection
-let dbUri = process.eventNames.MONGODB_URI || config.DbHost;
+const dbUri = process.eventNames.MONGODB_URI || 'mongodb://localhost/mongonews';
 mongoose.connect(dbUri, { useMongoClient: true });
 const db = mongoose.connection;
 db.on('error', error => console.log('Mongoose Error: ', error));
 
-// setup logging based on NODE_ENV. no logging if testing.
-const env = config.util.getEnv('NODE_ENV');
-if (env === 'dev') app.use(logger('dev'));
-if (env !== 'dev' && env !== 'test') app.use(logger('tiny'));
+// setup logging
+app.use(logger('dev'));
 
 // use body parser
 app.use(bodyParser.urlencoded({ extended: false }));
