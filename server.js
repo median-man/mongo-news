@@ -24,7 +24,8 @@ mongoose.Promise = Promise;
 const app = express();
 
 // Initialize the database connection
-mongoose.connect(config.DbHost, { useMongoClient: true } );
+let dbUri = process.eventNames.MONGODB_URI || config.DbHost;
+mongoose.connect(dbUri, { useMongoClient: true });
 const db = mongoose.connection;
 db.on('error', error => console.log('Mongoose Error: ', error));
 
