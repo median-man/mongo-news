@@ -23,7 +23,7 @@ mongoose.Promise = Promise;
 const app = express();
 
 // Initialize the database connection
-const dbUri = process.eventNames.MONGODB_URI || 'mongodb://localhost/mongonews';
+const dbUri = process.env.MONGODB_URI || 'mongodb://localhost/mongonews';
 mongoose.connect(dbUri, { useMongoClient: true });
 const db = mongoose.connection;
 db.on('error', error => console.log('Mongoose Error: ', error));
