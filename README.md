@@ -1,11 +1,17 @@
 # Mongo News
-A web app that lets users view and leave comments on the latest news.
+A web app that lets users view and leave comments on the latest news from the [Smashing Magazine web site](https://www.smashingmagazine.com/).
 
 ## Live Demo
-coming soon
+https://mongo-news-smash.herokuapp.com/
+
+## Using the App
+'Scrape New Articles' button checks for new articles, adds them to the database, and adds them to the page.
+Clicking on 'Save' will add the article to a list of saved articles.
+Clicking on 'Saved Articles' will show only articles that have been flagged as saved.
+Click on the 'Notes' button to view, add, and delete notes and comments about an article. An article must be saved for notes to be enable.
+If an article has been unsaved by clicking the 'Unsave' button, any notes are retained. However, the article must first be re-saved before notes can be viewed again.
 
 ## Getting Started
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequesites
 * NodeJS v6.11.2+ must be installed. Visit https://nodejs.org/en/download/
@@ -26,12 +32,13 @@ Run `npm test` to run all tests.
 * Testing framework: [Mocha](https://mochajs.org/) & [Chai](http://chaijs.com/)
 
 ## To Do
-- [ ] Add checking to scraper.js for page structure. Throw an error if page structure has changed.
-- [x] Setup initial server.js and implement an Article model (no comments yet)
-- [x] Test and refactor server and Article model
-- [x] Implement Article model. Test & Refactor
-- [x] Design a front-end
-- [ ] Fulfill all requirements found in [requirements.md](dev/requirements.md)
+- [ ] Change all alerts in application to implement a modal or popover.
+- [ ] Add additional error handling on routes to provide error message that are more specific.
+- [ ] Add feature to allow users to dismiss an article which will prevent the article from being 
+shown again even with subsequent calls to the scrape API.
+- [ ] Add a background image to the page header.
+- [ ] Create a custom color theme for the application.
+- [ ] Implement loading icons from Spectre framework.
 
 ## Contributors
 [John Desrosiers](https://github.com/median-man)
