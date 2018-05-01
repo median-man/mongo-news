@@ -18,8 +18,8 @@ https://mongo-news-smash.herokuapp.com/
 * Clone the repository. https://github.com/median-man/mongo-news
 
 ### Installation & Testing
-Run `npm install`to install dependencies.
-Run `npm test` to run all tests.
+1. Run `npm install`to install dependencies.
+2. Run `npm test` to run all tests.
 
 ## Built With
 * [Cheerio](https://cheerio.js.org/)
@@ -29,15 +29,6 @@ Run `npm test` to run all tests.
 * [MongoDB](https://www.mongodb.com/)
 * [Spectre](https://picturepan2.github.io/spectre/index.html) CSS Framework
 * Testing framework: [Mocha](https://mochajs.org/) & [Chai](http://chaijs.com/)
-
-## To Do
-- [ ] Change all alerts in application to implement a modal or popover.
-- [ ] Add additional error handling on routes to provide error message that are more specific.
-- [ ] Add feature to allow users to dismiss an article which will prevent the article from being 
-shown again even with subsequent calls to the scrape API.
-- [ ] Add a background image to the page header.
-- [ ] Create a custom color theme for the application.
-- [ ] Implement loading icons from Spectre framework.
 
 ## Contributors
 [John Desrosiers](https://github.com/median-man)
