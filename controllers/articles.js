@@ -1,4 +1,5 @@
 const axios = require('axios');
+const cheerio = require('cheerio');
 const Article = require('../models/Article.js');
 const SmashingParser = require('../lib/SmashingParser.js');
 
@@ -33,10 +34,14 @@ function saveArticle(req, res) {
 
 // Scrapes for articles and returns array of new articles to client
 function scrapeNew(req, res) {
-  axios()
-    .then((scrapings) => {
-      Article.create(scrapings, (err, newArticles) => {
-        if (err) console.log(err.message);
+  return axios.get('https://www.smashingmagazine.com/articles/')
+    .then(({ data }) => {
+      const html = data;
+      const $ = cheerio.load(html);
+      const smashingParser = new SmashingParser($);
+      const scrapedArticles = smashingParser.articles;
+      Article.create(scrapedArticles, (err, newArticles) => {
+        if (err) throw err;
         res.json(newArticles);
       });
     })
