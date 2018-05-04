@@ -39,10 +39,12 @@ function scrapeNew(req, res) {
       const html = data;
       const $ = cheerio.load(html);
       const smashingParser = new SmashingParser($);
-      const scrapedArticles = smashingParser.articles;
-      Article.create(scrapedArticles, (err, newArticles) => {
-        if (err) throw err;
-        res.json(newArticles);
+      let { articles } = smashingParser;
+      articles = articles
+        .map(article => new Article(article))
+        .map(article => article.save().catch(console.log));
+      Promise.all(articles).then(() => {
+        res.json(articles);
       });
     })
     .catch(err => res.status(400).send(err));
