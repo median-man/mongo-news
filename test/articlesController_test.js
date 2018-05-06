@@ -115,12 +115,6 @@ describe.only('controllers/articles', () => {
   const requestWithBody = () => mockReq({ body: { id: 'test' } });
 
   describe('saveArticle()', () => {
-    it('should reject if body is undefined', () => {
-      const request = mockReq();
-      const shouldThrow = () => articlesCon.saveArticle(request, mockRes());
-      expect(shouldThrow).to.throw();
-    });
-
     describe('when findByIdAndUpdate is successful', () => {
       it('should send updated article when findByIdAndUpdate is successful', () => {
         const request = requestWithBody();
@@ -149,8 +143,12 @@ describe.only('controllers/articles', () => {
   });
 
   describe('when Article.findByIdAndUpdate rejects', () => {
+    let request;
+    beforeEach(() => {
+      request = requestWithBody();
+    });
+
     function shouldSendErrorResponse(func) {
-      const request = requestWithBody();
       const expected = {
         error: new Error('test error'),
         status: 404,
@@ -173,6 +171,20 @@ describe.only('controllers/articles', () => {
     testFunction('unsaveArticle');
   });
 
-  describe('unsaveArticle()', () => {
+  describe('when request body is undefined', () => {
+    let request;
+
+    beforeEach(() => {
+      request = mockReq();
+    });
+
+    function methodShouldThrow(method) {
+      const shouldThrow = () => articlesCon[method](request, response);
+      const test = () => expect(shouldThrow).to.throw();
+      it(`${method}() should throw`, test);
+    }
+
+    methodShouldThrow('saveArticle');
+    methodShouldThrow('unsaveArticle');
   });
 });
