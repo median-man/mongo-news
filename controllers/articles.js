@@ -30,17 +30,12 @@ function saveArticle(req, res) {
     .catch(err => res.status(404).json(err));
 }
 
-// Scrapes for articles and returns array of new articles to client
 function scrapeNew(req, res) {
+  const createArticles = articles => Promise.all(articles.map(Article.create));
+
   return smashingScraper.scrape()
-    .then((articles) => {
-      articles
-        .map(article => new Article(article))
-        .map(article => article.save().catch(console.log));
-      Promise.all(articles).then(() => {
-        res.json(articles);
-      });
-    })
+    .then(createArticles)
+    .then(res.json.bind(res))
     .catch(err => res.status(400).send(err));
 }
 
