@@ -19,12 +19,10 @@ describe.only('controllers/articles', () => {
       const [criteria] = Article.find.firstCall.args;
       expect(criteria).to.eql(expected);
     };
-    sinon.stub(Article, 'findByIdAndUpdate');
   });
 
   afterEach(() => {
     Article.find.restore();
-    Article.findByIdAndUpdate.restore();
   });
 
   describe('scrapeNew()', () => {
@@ -112,79 +110,108 @@ describe.only('controllers/articles', () => {
     });
   });
 
-  const requestWithBody = () => mockReq({ body: { id: 'test' } });
+  describe('update methods', () => {
+    before(() => {
+      sinon.stub(Article, 'findByIdAndUpdate');
+    });
 
-  describe('saveArticle()', () => {
-    describe('when findByIdAndUpdate is successful', () => {
-      it('should send updated article when findByIdAndUpdate is successful', () => {
-        const request = requestWithBody();
-        const expected = { id: 'test', saved: 'true' };
+    afterEach(() => {
+      Article.findByIdAndUpdate.reset();
+    });
+
+    after(() => {
+      Article.findByIdAndUpdate.restore();
+    });
+
+    const requestWithBody = () => mockReq({ body: { id: 'test' } });
+
+    describe('when Article.findByIdAndUpdate rejects', () => {
+      let request;
+      beforeEach(() => {
+        request = requestWithBody();
+      });
+
+      function shouldSendErrorResponse(func) {
+        const expected = {
+          error: new Error('test error'),
+          status: 404,
+        };
+        Article.findByIdAndUpdate.rejects(expected.error);
+        return func(request, response)
+          .then(() => {
+            expect(response.status).to.have.been.calledWith(404);
+            expect(response.json).to.have.been.calledWith(expected.error);
+          });
+      }
+
+      function testFunction(method) {
+        it(`${method}() should send 404 response and error obj`, () => {
+          shouldSendErrorResponse(articlesCon[method]);
+        });
+      }
+
+      testFunction('saveArticle');
+      testFunction('unsaveArticle');
+    });
+
+    describe('when request body is undefined', () => {
+      let request;
+
+      beforeEach(() => {
+        request = mockReq();
+      });
+
+      function methodShouldThrow(method) {
+        const shouldThrow = () => articlesCon[method](request, response);
+        const test = () => expect(shouldThrow).to.throw();
+        it(`${method}() should throw`, test);
+      }
+
+      methodShouldThrow('saveArticle');
+      methodShouldThrow('unsaveArticle');
+    });
+
+    describe('when findByIdAndUpdate resolves', () => {
+      let request;
+
+      beforeEach(() => {
+        request = requestWithBody();
+      });
+
+      function methodShouldSendJson(method) {
+        const expected = { id: 'test' };
         Article.findByIdAndUpdate.resolves(expected);
-        return articlesCon.saveArticle(request, response)
+        return articlesCon[method](request, response)
           .then(() => {
             expect(response.json).to.have.been.calledWith(expected);
           });
-      });
+      }
 
-      it('should call findByIdAndUpdate to set Article { saved: true } and get updated Article', () => {
-        const request = requestWithBody();
-        const expectedArgs = [
-          request.body.id,
-          { saved: true },
-          { new: true },
-        ];
+      function testArticleUpdate(method, saved) {
+        const expectedArgs = {
+          id: request.body.id,
+          update: { saved },
+          options: { new: true },
+        };
         Article.findByIdAndUpdate.resolves();
-        return articlesCon.saveArticle(request, response)
-          .then(() => {
-            expect(Article.findByIdAndUpdate.firstCall.args).to.eql(expectedArgs);
-          });
-      });
-    });
-  });
+        const testExpectations = () => {
+          const [id, update, options] = Article.findByIdAndUpdate.firstCall.args;
+          expect(id, 'id argument').to.equal(expectedArgs.id);
+          expect(update, 'update argument').to.eql(expectedArgs.update);
+          expect(options).to.eql(expectedArgs.options);
+        };
+        return articlesCon[method](request, response).then(testExpectations);
+      }
 
-  describe('when Article.findByIdAndUpdate rejects', () => {
-    let request;
-    beforeEach(() => {
-      request = requestWithBody();
-    });
-
-    function shouldSendErrorResponse(func) {
-      const expected = {
-        error: new Error('test error'),
-        status: 404,
-      };
-      Article.findByIdAndUpdate.rejects(expected.error);
-      return func(request, response)
-        .then(() => {
-          expect(response.status).to.have.been.calledWith(404);
-          expect(response.json).to.have.been.calledWith(expected.error);
+      function testMethod(method, saved) {
+        it(`${method}() should send updated article json`, () => methodShouldSendJson(method));
+        it(`${method}() should set Article { saved: ${saved} }`, () => {
+          testArticleUpdate(method, saved);
         });
-    }
+      }
 
-    function testFunction(method) {
-      it(`${method}() should send 404 response and error obj`, () => {
-        shouldSendErrorResponse(articlesCon[method]);
-      });
-    }
-
-    testFunction('saveArticle');
-    testFunction('unsaveArticle');
-  });
-
-  describe('when request body is undefined', () => {
-    let request;
-
-    beforeEach(() => {
-      request = mockReq();
+      testMethod('saveArticle', true);
+      testMethod('unsaveArticle', false);
     });
-
-    function methodShouldThrow(method) {
-      const shouldThrow = () => articlesCon[method](request, response);
-      const test = () => expect(shouldThrow).to.throw();
-      it(`${method}() should throw`, test);
-    }
-
-    methodShouldThrow('saveArticle');
-    methodShouldThrow('unsaveArticle');
   });
 });
