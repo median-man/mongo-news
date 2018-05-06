@@ -1,11 +1,20 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
-const axios = require('axios');
+const smashingScraper = require('../lib/smashingScraper');
 const articlesCon = require('../controllers/articles.js');
 
-describe('controllers/articles functional tests', () => {
+describe('controllers/articles', () => {
+  beforeEach(() => {
+    sinon.stub(smashingScraper, 'scrape');
+  });
+
+  afterEach(() => {
+    smashingScraper.scrape.restore();
+  });
+
   describe('scrapeNew()', () => {
     it('should scrape new articles from https://www.smashingmagazine.com/articles/', (done) => {
+      smashingScraper.scrape.resolves([]);
       const response = {
         send: (err) => {
           throw err;
@@ -19,7 +28,6 @@ describe('controllers/articles functional tests', () => {
     });
 
     it('should send an error response', (done) => {
-      sinon.stub(axios, 'get').resolves({ data: '' });
       const response = {
         send: (err) => {
           expect(err).to.be.an('Error');
@@ -32,16 +40,11 @@ describe('controllers/articles functional tests', () => {
           throw new Error('Expected error response but received json.');
         },
       };
+      smashingScraper.scrape.rejects();
       articlesCon
         .scrapeNew({}, response)
-        .then(() => {
-          axios.get.restore();
-          return done();
-        })
-        .catch((reason) => {
-          axios.get.restore();
-          return done(reason);
-        });
+        .then(() => done())
+        .catch(done);
     });
   });
 });
