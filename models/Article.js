@@ -21,4 +21,8 @@ ArticleSchema.pre('save', (next) => {
   next();
 });
 
-module.exports = mongoose.model('Article', ArticleSchema);
+const isModelCompiled = () => mongoose.modelNames().indexOf('Article') > -1;
+const getModel = () => (isModelCompiled() ?
+  mongoose.connection.model('Article') : mongoose.model('Article', ArticleSchema));
+
+module.exports = getModel();
