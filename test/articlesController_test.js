@@ -1,27 +1,34 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const smashingScraper = require('../lib/smashingScraper');
+const Article = require('../models/Article.js');
 const articlesCon = require('../controllers/articles.js');
 
 describe('controllers/articles', () => {
-  beforeEach(() => {
-    sinon.stub(smashingScraper, 'scrape');
-  });
-
-  afterEach(() => {
-    smashingScraper.scrape.restore();
-  });
-
   describe('scrapeNew()', () => {
+    beforeEach(() => {
+      sinon.stub(smashingScraper, 'scrape');
+      sinon.stub(Article, 'create');
+    });
+
+    afterEach(() => {
+      smashingScraper.scrape.restore();
+      Article.create.restore();
+    });
+
     it('should scrape new articles from https://www.smashingmagazine.com/articles/', (done) => {
-      smashingScraper.scrape.resolves([]);
+      const testArticles = [{ test: 'article1' }, { test: 'article2' }];
+      smashingScraper.scrape.resolves(testArticles);
+      Article.create
+        .withArgs(testArticles[0]).resolves(testArticles[0])
+        .withArgs(testArticles[1]).resolves(testArticles[1]);
       const response = {
         send: (err) => {
           throw err;
         },
         status: () => response,
         json: (newArticles) => {
-          expect(newArticles).to.be.an('array');
+          expect(newArticles).to.eql(testArticles);
         },
       };
       articlesCon.scrapeNew({}, response).then(done).catch(done);
@@ -43,8 +50,15 @@ describe('controllers/articles', () => {
       smashingScraper.scrape.rejects();
       articlesCon
         .scrapeNew({}, response)
-        .then(() => done())
+        .then(() => {
+          expect(Article.create.called).to.be.false; // eslint-disable-line
+          return done();
+        })
         .catch(done);
     });
+  });
+
+  describe('getArticles()', () => {
+
   });
 });

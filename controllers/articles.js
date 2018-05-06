@@ -2,11 +2,7 @@ const Article = require('../models/Article.js');
 const smashingScraper = require('../lib/smashingScraper.js');
 
 function setSaved(id, saved) {
-  return Article.findByIdAndUpdate(
-    id,
-    { saved },
-    { new: true },
-  );
+  return Article.findByIdAndUpdate(id, { saved }, { new: true });
 }
 
 // Returns all articles from db in an array
@@ -30,6 +26,13 @@ function saveArticle(req, res) {
     .catch(err => res.status(404).json(err));
 }
 
+// Sets the saved property to false for the article
+function unsaveArticle(req, res) {
+  setSaved(req.body.id, false)
+    .then(article => res.json(article))
+    .catch(err => res.status(404).json(err));
+}
+
 function scrapeNew(req, res) {
   const createArticles = articles => Promise.all(articles.map(Article.create));
 
@@ -39,17 +42,10 @@ function scrapeNew(req, res) {
     .catch(err => res.status(400).send(err));
 }
 
-// Sets the saved property to false for the article
-function unsaveArticle(req, res) {
-  setSaved(req.body.id, false)
-    .then(article => res.json(article))
-    .catch(err => res.status(404).json(err));
-}
-
 module.exports = {
   getArticles,
   getSaved,
   saveArticle,
-  scrapeNew,
   unsaveArticle,
+  scrapeNew,
 };
