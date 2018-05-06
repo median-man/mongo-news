@@ -103,4 +103,65 @@ describe.only('controllers/articles', () => {
           .expect.send(expectedMsg));
     });
   });
+
+  describe('saveArticle()', () => {
+    beforeEach(() => {
+      sinon.stub(Article, 'findByIdAndUpdate');
+    });
+
+    afterEach(() => {
+      Article.findByIdAndUpdate.restore();
+    });
+
+    const requestFixture = () => ({ body: { id: 'test' } });
+
+    it('should send 404 response and error obj when findByIdAndUpdate rejects', () => {
+      const expected = {
+        error: new Error('test error'),
+        status: 404,
+      };
+      Article.findByIdAndUpdate.rejects(expected.error);
+      return articlesCon.saveArticle(requestFixture(), responseStub)
+        .then(() => {
+          responseStub
+            .expect.json(expected.error)
+            .expect.statusCode(expected.status);
+        });
+    });
+
+    it('should reject if body is undefined', () => {
+      const request = {};
+      const shouldThrow = () => articlesCon.saveArticle(request);
+      expect(shouldThrow).to.throw();
+    });
+
+    describe('when findByIdAndUpdate is successful', () => {
+      it('should send updated article when findByIdAndUpdate is successful', () => {
+        const expected = { id: 'test', saved: 'true' };
+        Article.findByIdAndUpdate.resolves(expected);
+        return articlesCon.saveArticle(requestFixture(), responseStub)
+          .then(() => {
+            responseStub.expect.json(expected);
+          });
+      });
+
+      it('should call findByIdAndUpdate to set Article { saved: true } and get updated Article', () => {
+        const request = requestFixture();
+        const expectedArgs = [
+          request.body.id,
+          { saved: true },
+          { new: true },
+        ];
+        Article.findByIdAndUpdate.resolves();
+        return articlesCon.saveArticle(request, responseStub)
+          .then(() => {
+            expect(Article.findByIdAndUpdate.firstCall.args).to.eql(expectedArgs);
+          });
+      });
+    });
+  });
+
+  describe('unsaveArticle()', () => {
+    it('todo');
+  });
 });
