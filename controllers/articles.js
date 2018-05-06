@@ -24,7 +24,7 @@ function saveArticle(req, res) {
 }
 
 function unsaveArticle(req, res) {
-  setSaved(req.body.id, false)
+  return setSaved(req.body.id, false)
     .then(article => res.json(article))
     .catch(err => res.status(404).json(err));
 }

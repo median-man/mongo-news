@@ -19,10 +19,12 @@ describe.only('controllers/articles', () => {
       const [criteria] = Article.find.firstCall.args;
       expect(criteria).to.eql(expected);
     };
+    sinon.stub(Article, 'findByIdAndUpdate');
   });
 
   afterEach(() => {
     Article.find.restore();
+    Article.findByIdAndUpdate.restore();
   });
 
   describe('scrapeNew()', () => {
@@ -110,31 +112,9 @@ describe.only('controllers/articles', () => {
     });
   });
 
+  const requestWithBody = () => mockReq({ body: { id: 'test' } });
+
   describe('saveArticle()', () => {
-    beforeEach(() => {
-      sinon.stub(Article, 'findByIdAndUpdate');
-    });
-
-    afterEach(() => {
-      Article.findByIdAndUpdate.restore();
-    });
-
-    const requestWithBody = () => mockReq({ body: { id: 'test' } });
-
-    it('should send 404 response and error obj when findByIdAndUpdate rejects', () => {
-      const request = requestWithBody();
-      const expected = {
-        error: new Error('test error'),
-        status: 404,
-      };
-      Article.findByIdAndUpdate.rejects(expected.error);
-      return articlesCon.saveArticle(request, response)
-        .then(() => {
-          expect(response.status).to.have.been.calledWith(404);
-          expect(response.json).to.have.been.calledWith(expected.error);
-        });
-    });
-
     it('should reject if body is undefined', () => {
       const request = mockReq();
       const shouldThrow = () => articlesCon.saveArticle(request, mockRes());
@@ -168,7 +148,31 @@ describe.only('controllers/articles', () => {
     });
   });
 
+  describe('when Article.findByIdAndUpdate rejects', () => {
+    function shouldSendErrorResponse(func) {
+      const request = requestWithBody();
+      const expected = {
+        error: new Error('test error'),
+        status: 404,
+      };
+      Article.findByIdAndUpdate.rejects(expected.error);
+      return func(request, response)
+        .then(() => {
+          expect(response.status).to.have.been.calledWith(404);
+          expect(response.json).to.have.been.calledWith(expected.error);
+        });
+    }
+
+    function testFunction(method) {
+      it(`${method}() should send 404 response and error obj`, () => {
+        shouldSendErrorResponse(articlesCon[method]);
+      });
+    }
+
+    testFunction('saveArticle');
+    testFunction('unsaveArticle');
+  });
+
   describe('unsaveArticle()', () => {
-    it('todo');
   });
 });
