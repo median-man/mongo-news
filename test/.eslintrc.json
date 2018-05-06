@@ -3,6 +3,7 @@
     "mocha": true
   },
   "rules": {
-		"func-names": "off"
+    "func-names": "off",
+    "no-unused-expressions": "off"
 	}
 }

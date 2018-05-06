@@ -5,28 +5,24 @@ function setSaved(id, saved) {
   return Article.findByIdAndUpdate(id, { saved }, { new: true });
 }
 
-// Returns all articles from db in an array
 function getArticles(req, res) {
-  Article.find()
+  return Article.find()
     .then(articles => res.json(articles))
     .catch(err => res.status(500).json(err));
 }
 
-// Returns articles where saved = true
 function getSaved(req, res) {
-  Article.find({ saved: true })
+  return Article.find({ saved: true })
     .then(articles => res.json(articles))
     .catch(err => res.status(500).send(err.message));
 }
 
-// Sets the saved property to true for the article with matching id
 function saveArticle(req, res) {
   setSaved(req.body.id, true)
     .then(article => res.json(article))
     .catch(err => res.status(404).json(err));
 }
 
-// Sets the saved property to false for the article
 function unsaveArticle(req, res) {
   setSaved(req.body.id, false)
     .then(article => res.json(article))
