@@ -1,7 +1,11 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
 
-function createExpect(respStub) {
+function chainableStub(context) {
+  return sinon.stub().returns(context);
+}
+
+function createExpectationTests(respStub) {
   return {
     statusCode(code) {
       const [status] = respStub.status.firstCall.args;
@@ -23,13 +27,13 @@ function createExpect(respStub) {
   };
 }
 
-function createResponseStub() {
-  const respStub = {};
-  respStub.json = sinon.stub().returns(respStub);
-  respStub.status = sinon.stub().returns(respStub);
-  respStub.send = sinon.stub().returns(respStub);
-  respStub.expect = createExpect(respStub);
-  return respStub;
+class ResponseStub {
+  constructor() {
+    this.json = chainableStub(this);
+    this.status = chainableStub(this);
+    this.send = chainableStub(this);
+    this.expect = createExpectationTests(this);
+  }
 }
 
-module.exports = createResponseStub;
+module.exports = ResponseStub;

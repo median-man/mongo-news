@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
-const createResponseStub = require('./responseStub');
+const ResponseStub = require('./responseStub');
 const smashingScraper = require('../lib/smashingScraper');
 const Article = require('../models/Article.js');
 const articlesCon = require('../controllers/articles.js');
@@ -9,8 +9,7 @@ describe.only('controllers/articles', () => {
   let responseStub;
 
   beforeEach(() => {
-    responseStub = createResponseStub();
-    expect(responseStub).to.exist;
+    responseStub = new ResponseStub();
     sinon.stub(Article, 'find');
     Article.find.expectCriteria = (expected) => {
       const [criteria] = Article.find.firstCall.args;
