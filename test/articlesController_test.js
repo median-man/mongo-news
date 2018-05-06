@@ -1,39 +1,16 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
+const createResponseStub = require('./responseStub');
 const smashingScraper = require('../lib/smashingScraper');
 const Article = require('../models/Article.js');
 const articlesCon = require('../controllers/articles.js');
 
 describe.only('controllers/articles', () => {
-  const responseStub = {
-    reset() {
-      this.json = sinon.stub().returns(this);
-      this.status = sinon.stub().returns(this);
-      this.send = sinon.stub().returns(this);
-    },
-    expect: {
-      statusCode(code) {
-        const [status] = responseStub.status.firstCall.args;
-        expect(status, `Expected response.status(${code}) to be called.`).to.equal(code);
-        return responseStub;
-      },
-
-      json(expected) {
-        const [actual] = responseStub.json.firstCall.args;
-        expect(actual).to.equal(expected);
-        return responseStub;
-      },
-
-      send(expected) {
-        const [actual] = responseStub.send.firstCall.args;
-        expect(actual).to.equal(expected);
-        return responseStub;
-      },
-    },
-  };
+  let responseStub;
 
   beforeEach(() => {
-    responseStub.reset();
+    responseStub = createResponseStub();
+    expect(responseStub).to.exist;
     sinon.stub(Article, 'find');
     Article.find.expectCriteria = (expected) => {
       const [criteria] = Article.find.firstCall.args;
