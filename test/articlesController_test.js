@@ -119,15 +119,16 @@ describe.only('controllers/articles', () => {
       Article.findByIdAndUpdate.restore();
     });
 
-    const requestFixture = () => ({ body: { id: 'test' } });
+    const requestWithBody = () => mockReq({ body: { id: 'test' } });
 
     it('should send 404 response and error obj when findByIdAndUpdate rejects', () => {
+      const request = requestWithBody();
       const expected = {
         error: new Error('test error'),
         status: 404,
       };
       Article.findByIdAndUpdate.rejects(expected.error);
-      return articlesCon.saveArticle(requestFixture(), response)
+      return articlesCon.saveArticle(request, response)
         .then(() => {
           expect(response.status).to.have.been.calledWith(404);
           expect(response.json).to.have.been.calledWith(expected.error);
@@ -135,23 +136,24 @@ describe.only('controllers/articles', () => {
     });
 
     it('should reject if body is undefined', () => {
-      const request = {};
-      const shouldThrow = () => articlesCon.saveArticle(request);
+      const request = mockReq();
+      const shouldThrow = () => articlesCon.saveArticle(request, mockRes());
       expect(shouldThrow).to.throw();
     });
 
     describe('when findByIdAndUpdate is successful', () => {
       it('should send updated article when findByIdAndUpdate is successful', () => {
+        const request = requestWithBody();
         const expected = { id: 'test', saved: 'true' };
         Article.findByIdAndUpdate.resolves(expected);
-        return articlesCon.saveArticle(requestFixture(), response)
+        return articlesCon.saveArticle(request, response)
           .then(() => {
             expect(response.json).to.have.been.calledWith(expected);
           });
       });
 
       it('should call findByIdAndUpdate to set Article { saved: true } and get updated Article', () => {
-        const request = requestFixture();
+        const request = requestWithBody();
         const expectedArgs = [
           request.body.id,
           { saved: true },
