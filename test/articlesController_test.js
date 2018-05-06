@@ -14,15 +14,6 @@ describe.only('controllers/articles', () => {
 
   beforeEach(() => {
     response = mockRes();
-    sinon.stub(Article, 'find');
-    Article.find.expectCriteria = (expected) => {
-      const [criteria] = Article.find.firstCall.args;
-      expect(criteria).to.eql(expected);
-    };
-  });
-
-  afterEach(() => {
-    Article.find.restore();
   });
 
   describe('scrapeNew()', () => {
@@ -53,60 +44,87 @@ describe.only('controllers/articles', () => {
       return articlesCon
         .scrapeNew(mockReq(), response)
         .then(() => {
-          expect(response.status).to.have.been.calledWith(400);
+          const badRequest = 400;
+          expect(response.status).to.have.been.calledWith(badRequest);
           expect(response.send).to.have.been.calledWith(expectedErr);
         });
     });
   });
 
-  describe('getArticles()', () => {
-    it('should return an array of articles', () => {
-      const expected = [{ test: 'article' }];
-      Article.find.resolves(expected);
-      return articlesCon
-        .getArticles(mockReq(), response)
-        .then(() => {
-          Article.find.expectCriteria(undefined);
-          expect(response.json).to.have.been.calledWith(expected);
-        });
+  describe('read methods', () => {
+    let request;
+
+    beforeEach(() => {
+      sinon.stub(Article, 'find');
     });
 
-    it('should send an error response if read fails', () => {
-      const expectedErr = new Error('test error');
-      Article.find.rejects(expectedErr);
-      return articlesCon
-        .getArticles(mockReq(), response)
+    afterEach(() => {
+      Article.find.restore();
+    });
+
+    beforeEach(() => {
+      request = mockReq();
+    });
+
+    describe('when Article.find rejects', () => {
+      let expectedMsg;
+      let expectedErr;
+      const internalServerError = 500;
+
+      beforeEach(() => {
+        expectedMsg = 'test error';
+        expectedErr = new Error(expectedMsg);
+        Article.find.rejects(expectedErr);
+      });
+
+      it('getArticles() should send an error response', () => articlesCon
+        .getArticles(request, response)
         .then(() => {
-          expect(response.status).to.have.been.calledWith(500);
+          expect(response.status).to.have.been.calledWith(internalServerError);
           expect(response.json).to.have.been.calledWith(expectedErr);
-        });
-    });
-  });
+        }));
 
-  describe('getSaved()', () => {
-    it('should find articles where { saved: true }', () => {
-      const expected = {
-        criteria: { saved: true },
-        responseData: [{ test: 'article', saved: true }],
-      };
-      Article.find.resolves(expected.responseData);
-      return articlesCon
-        .getSaved(mockReq(), response)
+      it('getSaved() should send an error response', () => articlesCon
+        .getSaved(request, response)
         .then(() => {
-          Article.find.expectCriteria(expected.criteria);
-          expect(response.json).to.have.been.calledWith(expected.responseData);
-        });
-    });
-
-    it('should send an error response if read fails', () => {
-      const expectedMsg = 'error message';
-      Article.find.rejects({ message: expectedMsg });
-      return articlesCon
-        .getSaved(mockReq(), response)
-        .then(() => {
-          expect(response.status).to.have.been.calledWith(500);
+          expect(response.status).to.have.been.calledWith(internalServerError);
           expect(response.send).to.have.been.calledWith(expectedMsg);
-        });
+        }));
+    });
+
+    describe('when Article.find resolves', () => {
+      const expected = [{ test: 'article' }];
+
+      beforeEach(() => {
+        Article.find.resolves(expected);
+      });
+
+      function methodShouldSendJson(method) {
+        return articlesCon[method](request, response)
+          .then(() => {
+            expect(response.json).to.have.been.calledWith(expected);
+          });
+      }
+
+      it('getArticles() should send json', () => methodShouldSendJson('getArticles'));
+
+      it('getArticles() should call Article.Find without conditions', () => articlesCon
+        .getArticles(request, response)
+        .then(() => {
+          expect(Article.find).to.have.been.called;
+          expect(Article.find).to.have.been.calledWithExactly();
+        }));
+
+      it('getSaved() should send json', () => methodShouldSendJson('getSaved'));
+
+      it('getSaved() should call Article.Find with conditions', () => {
+        const expectedConditions = { saved: true };
+        return articlesCon
+          .getSaved(request, response)
+          .then(() => {
+            expect(Article.find).to.have.been.calledWith(expectedConditions);
+          });
+      });
     });
   });
 
@@ -127,25 +145,24 @@ describe.only('controllers/articles', () => {
 
     describe('when Article.findByIdAndUpdate rejects', () => {
       let request;
+      const notFound = 404;
+
       beforeEach(() => {
         request = requestWithBody();
       });
 
       function shouldSendErrorResponse(func) {
-        const expected = {
-          error: new Error('test error'),
-          status: 404,
-        };
-        Article.findByIdAndUpdate.rejects(expected.error);
+        const expectedError = new Error('test error');
+        Article.findByIdAndUpdate.rejects(expectedError);
         return func(request, response)
           .then(() => {
-            expect(response.status).to.have.been.calledWith(404);
-            expect(response.json).to.have.been.calledWith(expected.error);
+            expect(response.status).to.have.been.calledWith(notFound);
+            expect(response.json).to.have.been.calledWith(expectedError);
           });
       }
 
       function testFunction(method) {
-        it(`${method}() should send 404 response and error obj`, () => {
+        it(`${method}() should send ${notFound} response and error obj`, () => {
           shouldSendErrorResponse(articlesCon[method]);
         });
       }
