@@ -9,7 +9,9 @@ const articlesCon = require('../controllers/articles.js');
 chai.use(sinonChai);
 const { expect } = chai;
 
-describe.only('controllers/articles', () => {
+const internalServerError = 500;
+
+describe('controllers/articles', () => {
   let response;
 
   beforeEach(() => {
@@ -27,27 +29,48 @@ describe.only('controllers/articles', () => {
       Article.create.restore();
     });
 
-    it('should scrape new articles from https://www.smashingmagazine.com/articles/', () => {
-      const testArticles = [{ test: 'article1' }, { test: 'article2' }];
-      smashingScraper.scrape.resolves(testArticles);
-      Article.create
-        .withArgs(testArticles[0]).resolves(testArticles[0])
-        .withArgs(testArticles[1]).resolves(testArticles[1]);
-      return articlesCon.scrapeNew(mockReq(), response).then(() => {
-        expect(response.json).to.have.been.calledWith(testArticles);
-      });
-    });
-
-    it('should send an error response', () => {
+    it('should send an error response when scraper rejects', () => {
       const expectedErr = new Error();
       smashingScraper.scrape.rejects(expectedErr);
       return articlesCon
         .scrapeNew(mockReq(), response)
         .then(() => {
-          const badRequest = 400;
-          expect(response.status).to.have.been.calledWith(badRequest);
+          expect(response.status).to.have.been.calledWith(internalServerError);
           expect(response.send).to.have.been.calledWith(expectedErr);
         });
+    });
+
+    const testArticles = [{ test: 'article1' }, { test: 'article2' }];
+
+    describe('when Article.create resolves', () => {
+      beforeEach(() => {
+        smashingScraper.scrape.resolves(testArticles);
+        Article.create
+          .withArgs(testArticles[0]).resolves(testArticles[0])
+          .withArgs(testArticles[1]).resolves(testArticles[1]);
+      });
+
+      it('should scrape new articles from https://www.smashingmagazine.com/articles/', () => articlesCon
+        .scrapeNew(mockReq(), response).then(() => {
+          expect(response.json).to.have.been.calledWith(testArticles);
+        }));
+
+      it('should create a document for new articles', () => articlesCon
+        .scrapeNew(mockReq(), response).then(() => {
+          expect(Article.create.firstCall).to.have.been.calledWithExactly(testArticles[0]);
+        }));
+    });
+
+    describe('when Article.create rejects on an article', () => {
+      it('should send json for the articles that have been created', () => {
+        smashingScraper.scrape.resolves(testArticles);
+        Article.create
+          .withArgs(testArticles[0]).rejects()
+          .withArgs(testArticles[1]).resolves(testArticles[1]);
+        return articlesCon.scrapeNew(mockReq(), response).then(() => {
+          expect(response.json).to.have.been.calledWith([testArticles[1]]);
+        });
+      });
     });
   });
 
@@ -69,7 +92,6 @@ describe.only('controllers/articles', () => {
     describe('when Article.find rejects', () => {
       let expectedMsg;
       let expectedErr;
-      const internalServerError = 500;
 
       beforeEach(() => {
         expectedMsg = 'test error';

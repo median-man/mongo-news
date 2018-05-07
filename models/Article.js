@@ -10,7 +10,6 @@ const ArticleSchema = new Schema({
   pubDate: String,
   saved: { type: Boolean, default: false },
   summary: { type: String, required: true },
-  tags: Array,
 
   // prevent duplicate articles
   url: { type: String, required: true, unique: true },

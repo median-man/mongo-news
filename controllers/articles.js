@@ -3,12 +3,17 @@ const smashingScraper = require('../lib/smashingScraper.js');
 
 
 function scrapeNew(req, res) {
-  const createArticles = articles => Promise.all(articles.map(Article.create));
+  const createArticle = article => Article.create(article).catch(() => null);
+  const createArticles = articles => articles.map(createArticle);
+  const awaitAllArticles = articles => Promise.all(articles);
+  const filterNull = articles => articles.filter(article => article);
 
   return smashingScraper.scrape()
     .then(createArticles)
-    .then(res.json.bind(res))
-    .catch(err => res.status(400).send(err));
+    .then(awaitAllArticles)
+    .then(filterNull)
+    .then(articles => res.json(articles))
+    .catch(err => res.status(500).send(err));
 }
 
 function setSaved(id, saved) {
