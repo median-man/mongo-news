@@ -1,14 +1,18 @@
 const Article = require('../models/Article.js');
 const smashingScraper = require('../lib/smashingScraper.js');
 
-
 function scrapeNew(req, res) {
-  const createArticle = article => Article.create(article).catch(() => null);
+  const createArticle = article => 
+    Article.create({
+      ...article,
+      datePublished: new Date(article.pubDate),
+    }).catch(() => null);
   const createArticles = articles => articles.map(createArticle);
   const awaitAllArticles = articles => Promise.all(articles);
   const filterNull = articles => articles.filter(article => article);
 
-  return smashingScraper.scrape()
+  return smashingScraper
+    .scrape()
     .then(createArticles)
     .then(awaitAllArticles)
     .then(filterNull)

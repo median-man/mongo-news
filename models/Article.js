@@ -8,6 +8,7 @@ const ArticleSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   headline: { type: String, required: true },
   pubDate: String,
+  datePublished: Date,
   saved: { type: Boolean, default: false },
   summary: { type: String, required: true },
 
@@ -21,7 +22,9 @@ ArticleSchema.pre('save', (next) => {
 });
 
 const isModelCompiled = () => mongoose.modelNames().indexOf('Article') > -1;
-const getModel = () => (isModelCompiled() ?
-  mongoose.connection.model('Article') : mongoose.model('Article', ArticleSchema));
+const getModel = () =>
+  (isModelCompiled()
+    ? mongoose.connection.model('Article')
+    : mongoose.model('Article', ArticleSchema));
 
 module.exports = getModel();

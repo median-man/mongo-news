@@ -1,10 +1,24 @@
+const { DateTime } = require('luxon');
+
 const Article = require('../models/Article.js');
+
+function articleDisplayDate(date) {
+  const dateTime = DateTime.fromJSDate(date);
+  return dateTime.toFormat('LLLL d, yyyy');
+}
 
 // Sends index page with articles from the database to the client
 function getRoot(req, res) {
-  // get articles
   Article.find()
-    .then(articles => res.render('index', { articles }))
+    .then((articles) => {
+      const hbsObject = {
+        articles: articles.map(article => ({
+          ...article._doc, // eslint-disable-line
+          displayDate: articleDisplayDate(article.datePublished),
+        })),
+      };
+      return res.render('index', hbsObject);
+    })
     .catch(() => res.status(404).send('page unavailable'));
 }
 

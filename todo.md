@@ -1,4 +1,5 @@
 # Mongo News To Do List
+- [ ] Save and render date article published.
 - [ ] Change all alerts in application to implement a modal or popover.
 - [ ] Add additional error handling on routes to provide error message that are more specific.
 - [ ] Add feature to allow users to dismiss an article which will prevent the article from being 
