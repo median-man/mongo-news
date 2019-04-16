@@ -7,15 +7,16 @@ function articleDisplayDate(date) {
   return dateTime.toFormat('LLLL d, yyyy');
 }
 
+function enrichArticle(article) {
+  return { ...article._doc, displayDate: articleDisplayDate(article.datePublished) };
+}
+
 // Sends index page with articles from the database to the client
 function getRoot(req, res) {
   Article.find()
     .then((articles) => {
       const hbsObject = {
-        articles: articles.map(article => ({
-          ...article._doc, // eslint-disable-line
-          displayDate: articleDisplayDate(article.datePublished),
-        })),
+        articles: articles.map(enrichArticle),
       };
       return res.render('index', hbsObject);
     })
@@ -26,7 +27,7 @@ function getRoot(req, res) {
 function getSaved(req, res) {
   // get saved articles
   Article.find({ saved: true })
-    .then(articles => res.render('index', { articles, saved: true }))
+    .then(articles => res.render('index', { articles: articles.map(enrichArticle), saved: true }))
     .catch(() => res.stats(404).send('page unavailable'));
 }
 

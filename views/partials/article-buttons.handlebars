@@ -1,12 +1,12 @@
 {{!-- Renders the buttons on an article-panel ('this' refers to an article) --}}
 {{#if this.saved}}
   <div class="btn-group btn-group-block">
-    <button class="btn btn-primary notes" data-id="{{this.id}}" data-headline="{{this.headline}}">Notes</button>
-    <button class="btn text-error unsave" data-id="{{this.id}}">Unsave</button>
+    <button class="btn btn-primary notes" data-id="{{this._id}}" data-headline="{{this.headline}}">Notes</button>
+    <button class="btn text-error unsave" data-id="{{this._id}}">Unsave</button>
   </div>
 {{else}}
   <div class="btn-group btn-group-block">
     <button class="btn disabled">Notes</button>
-    <button class="btn btn-primary btn-block save" data-id={{this.id}}>Save</button>
+    <button class="btn btn-primary btn-block save" data-id={{this._id}}>Save</button>
   </div>
 {{/if}}
