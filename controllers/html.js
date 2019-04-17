@@ -8,7 +8,16 @@ function articleDisplayDate(date) {
 }
 
 function enrichArticle(article) {
-  return { ...article._doc, displayDate: articleDisplayDate(article.datePublished) };
+  const { pubDate } = article;
+  let { datePublished } = article;
+  let displayDate;
+  if (datePublished) {
+    displayDate = articleDisplayDate(datePublished);
+  } else {
+    displayDate = pubDate;
+    datePublished = pubDate;
+  }
+  return { ...article._doc, displayDate, datePublished };
 }
 
 // Sends index page with articles from the database to the client
@@ -25,7 +34,6 @@ function getRoot(req, res) {
 
 // Sends index page with saved articles to client
 function getSaved(req, res) {
-  // get saved articles
   Article.find({ saved: true })
     .then(articles => res.render('index', { articles: articles.map(enrichArticle), saved: true }))
     .catch(() => res.stats(404).send('page unavailable'));
